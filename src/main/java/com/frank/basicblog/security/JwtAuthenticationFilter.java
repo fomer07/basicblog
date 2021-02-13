@@ -1,13 +1,16 @@
 package com.frank.basicblog.security;
 
-import antlr.StringUtils;
+
+import com.frank.basicblog.service.UserDetailsServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
+
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -21,19 +24,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @Qualifier("userDetailsServiceImpl")
+
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailsServiceImpl userDetailsService;
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest,
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-
+    try {
         String token = getJwtFromRequest(httpServletRequest);
 
-        if ( !token.isEmpty() && jwtProvider.validateToken(token)){
+        if ( token!=null && jwtProvider.validateToken(token)){
 
             String username =jwtProvider.getUsernameFromToken(token);
 
@@ -41,9 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,userDetails.getAuthorities()
             );
-            authentication.setDetails(new WebAuthenticationDetails(httpServletRequest));
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        }}catch (Exception e) {
+        logger.error("could not set user authentication",e);
+    }
 
         doFilter(httpServletRequest, httpServletResponse, filterChain);
     }

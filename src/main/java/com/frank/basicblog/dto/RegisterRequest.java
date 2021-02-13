@@ -1,11 +1,22 @@
 package com.frank.basicblog.dto;
 
+import java.util.Set;
+
 public class RegisterRequest {
 
 
     private String username;
     private String email;
     private String password;
+    private Set<String> role;
+
+    public Set<String> getRole() {
+        return role;
+    }
+
+    public void setRole(Set<String> role) {
+        this.role = role;
+    }
 
     public String getUsername() {
         return username;

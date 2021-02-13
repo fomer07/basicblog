@@ -2,6 +2,9 @@ package com.frank.basicblog.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,7 +22,22 @@ public class User {
     private String password;
 
     @Column
+    @Email
     private String email;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+                joinColumns = @JoinColumn(name = "user_id"),
+                inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roleSet = new HashSet<>();
+
+    public User () {}
+
+    public User (String username,String password,String email){
+        this.username=username;
+        this.password=password;
+        this.email=email;
+    }
 
 
     // getters and setters
@@ -55,5 +73,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Role> getRoleSet() {
+        return roleSet;
+    }
+
+    public void setRoleSet(Set<Role> roleSet) {
+        this.roleSet = roleSet;
     }
 }
