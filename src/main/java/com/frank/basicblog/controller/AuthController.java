@@ -10,7 +10,6 @@ import com.frank.basicblog.model.User;
 import com.frank.basicblog.repository.RoleRepository;
 import com.frank.basicblog.repository.UserRepository;
 import com.frank.basicblog.security.JwtProvider;
-import com.frank.basicblog.service.AuthService;
 import com.frank.basicblog.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
