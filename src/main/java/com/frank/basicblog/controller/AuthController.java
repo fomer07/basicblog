@@ -56,8 +56,8 @@ public class AuthController {
     public ResponseEntity signup(@Valid @RequestBody RegisterRequest registerRequest){
 
         User user = new User(registerRequest.getUsername(),
-                             registerRequest.getEmail(),
-                             encoder.encode(registerRequest.getPassword())
+                             encoder.encode(registerRequest.getPassword()),
+                             registerRequest.getEmail()
         );
         Set<String> strRoles = registerRequest.getRole();
         Set<Role> roleSet = new HashSet<>();
