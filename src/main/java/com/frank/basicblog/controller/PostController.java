@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/post")
+@RestController
+@RequestMapping("/api/post")
 public class PostController {
 
     @Autowired
     private PostService postService;
 
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity createPost(@RequestBody PostDto postDto){
         postService.createPost(postDto);
     return new  ResponseEntity(HttpStatus.OK);

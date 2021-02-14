@@ -6,7 +6,6 @@ import com.frank.basicblog.model.Post;
 import com.frank.basicblog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,21 +20,22 @@ public class PostService {
     @Autowired
     private AuthService authService;
 
-    @Transactional
+
     public void createPost(PostDto postDto){
-       Post post = mapToPost(postDto);
+        Post post = mapToPost(postDto);
         postRepository.save(post);
     }
 
-    @Transactional
+
     public List<PostDto> getAll(){
         List<Post> all = postRepository.findAll();
         return  all.stream().map(this::mapToDto).collect(toList());
     }
 
-    @Transactional
+
     public PostDto getById(Long id){
-       return mapToDto(postRepository.getOne(id));
+        Post post = postRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("post not found"));
+       return mapToDto(post);
     }
 
 
@@ -56,7 +56,6 @@ public class PostService {
         postDto.setId(post.getId());
         postDto.setUsername(post.getUsername());
         postDto.setTitle(post.getTitle());
-        postDto.setCreated(post.getCreated());
         return postDto;
 
     }
